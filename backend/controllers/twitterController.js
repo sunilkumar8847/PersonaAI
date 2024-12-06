@@ -1,22 +1,23 @@
-const { scrapeTweets, generateCohereResponse } = require('../services/twitterService');
+//twitterController.js
+const { scrapeAndStoreTweets, generateCohereResponse } = require('../services/twitterService');
+const KnowledgeBase = require('../model/knowledgeBaseModel');
 const ChatLog = require('../model/chatLogModel');
 
 exports.getChatResponse = async (req, res) => {
     const { twitterHandle, userMessage } = req.body;
     try {
-        const tweets = await scrapeTweets(twitterHandle);
+        let knowledgeBase = await KnowledgeBase.findOne({ twitterHandle: twitterHandle });
 
-        if (tweets.length === 0) {
-            return res.status(404).json({ 
-                error: 'No tweets found for this handle. Unable to generate persona.' 
-            });
+        if (!knowledgeBase) {
+            console.log('No data found. Scraping tweets...');
+            const tweets = await scrapeAndStoreTweets(twitterHandle);
+            knowledgeBase = { twitterHandle, tweets };
+        } else {
+            console.log('Data found in the knowledge base');
         }
 
-        const persona = `You are ${twitterHandle}, known for your unique tone and ideas. 
-        Respond in a style consistent with these recent tweets: 
-        ${tweets.join('\n')}
-        
-        Respond to the following message casually and authentically:`;
+        // Prompt engineering for concise responses
+        const persona = `You are ${twitterHandle}, known for your unique tone and ideas. Here are some recent tweets: ${knowledgeBase.tweets.slice(0, 3).join(' ')}. Respond to user queries in a brief and engaging manner, avoiding lengthy responses.`;
 
         const response = await generateCohereResponse(persona, userMessage);
 
@@ -29,9 +30,6 @@ exports.getChatResponse = async (req, res) => {
 
         res.status(200).json({ response });
     } catch (error) {
-        console.error('Error in getChatResponse:', error);
-        res.status(500).json({ 
-            error: error.message || 'An unexpected error occurred' 
-        });
+        res.status(500).json({ error: error.message });
     }
 };
