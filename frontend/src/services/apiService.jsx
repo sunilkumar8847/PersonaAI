@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-    baseURL: `${process.env.BACKEND_URL}/api`,
+    baseURL: `https://persona-chat-bot-backend.vercel.app/api`,
     headers: {
         'Content-Type': 'application/json',
     },
