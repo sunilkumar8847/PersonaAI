@@ -15,7 +15,7 @@ const getCurrentTime = () => {
 const ChatBox = ({ twitterHandle }) => {
     const [userMessage, setUserMessage] = useState('');
     const [chatHistory, setChatHistory] = useState([]);
-    const chatContainerRef = useRef(null); // Reference for the chat container
+    const chatContainerRef = useRef(null);
 
     const handleChat = async () => {
         if (!twitterHandle || !userMessage.trim()) return alert("Please provide both fields!");
@@ -46,7 +46,6 @@ const ChatBox = ({ twitterHandle }) => {
     };
 
     useEffect(() => {
-        // Scroll to the bottom whenever the chat history updates
         if (chatContainerRef.current) {
             chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
         }
@@ -55,7 +54,7 @@ const ChatBox = ({ twitterHandle }) => {
     return (
         <div className="flex flex-col h-screen bg-black font-inter">
             <div
-                ref={chatContainerRef} // Attach the ref to the chat container
+                ref={chatContainerRef}
                 className="flex-1 overflow-y-auto p-4 space-y-4 mx-32 "
             >
                 {chatHistory.map((entry, idx) => (
