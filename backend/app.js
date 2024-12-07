@@ -11,7 +11,7 @@ app.use(cors({
   origin: (origin, callback) => {
     const allowedOrigins = [
       'http://localhost:5173',
-      'https://persona-chat-bot.vercel.app/',
+      'https://persona-chat-bot.vercel.app',
     ];
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
