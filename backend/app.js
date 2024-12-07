@@ -7,6 +7,7 @@ const twitterRoutes = require('./routes/twitterRoutes');
 const app = express();
 
 app.use(cors({
+
   origin: (origin, callback) => {
     const allowedOrigins = [
       'http://localhost:5173',
