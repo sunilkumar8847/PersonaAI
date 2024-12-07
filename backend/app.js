@@ -6,8 +6,8 @@ const twitterRoutes = require('./routes/twitterRoutes');
 
 const app = express();
 
-app.use(cors({
 
+app.use(cors({
   origin: (origin, callback) => {
     const allowedOrigins = [
       'http://localhost:5173',
@@ -19,9 +19,19 @@ app.use(cors({
       callback(new Error('Not allowed by CORS'));
     }
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
 }));
+
+
+app.options('*', cors());
+
+app.use((req, res, next) => {
+  console.log('Request Origin:', req.headers.origin);
+  console.log('Request Method:', req.method);
+  next();
+});
 
 app.use(express.json());
 
@@ -31,6 +41,7 @@ mongoose.connect(process.env.MONGO_URI)
   }).catch((error) => {
     console.error("MongoDB connection error:", error);
   });
+
 
 app.use('/api', twitterRoutes);
 

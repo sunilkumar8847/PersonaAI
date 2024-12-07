@@ -18,7 +18,3 @@
   flex-direction: column;
   gap: 10px;
 }
-
-.loader {
-  border-top-color: #4ade80; /* Green loader color */
-}
