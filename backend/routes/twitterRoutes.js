@@ -1,9 +1,8 @@
 const express = require('express');
-const { getChatResponse } = require('../controllers/twitterController');
+const {scrapePersona, chatResponse} = require('../controllers/twitterController')
 const router = express.Router();
 
-router.post('/chat', getChatResponse);
+router.post('/scrap', scrapePersona);
+router.post('/chat', chatResponse);
 
 module.exports = router;
-
-

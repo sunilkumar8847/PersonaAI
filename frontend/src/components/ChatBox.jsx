@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import axios from '../services/apiService';
 import { IoMdSend } from "react-icons/io";
+import { sendChatMessage } from '../services/apiService';
 
 const getCurrentTime = () => {
     const now = new Date();
@@ -15,51 +15,53 @@ const getCurrentTime = () => {
 const ChatBox = ({ twitterHandle }) => {
     const [userMessage, setUserMessage] = useState('');
     const [chatHistory, setChatHistory] = useState([]);
+    const [isTyping, setIsTyping] = useState(false);
     const chatContainerRef = useRef(null);
 
     const handleChat = async () => {
-        if (!twitterHandle || !userMessage.trim()) return alert("Please provide both fields!");
+        if (!userMessage.trim()) return;
 
         const newChatHistory = [
             ...chatHistory,
-            { user: userMessage, userTime: getCurrentTime(), bot: null }
+            { user: userMessage, userTime: getCurrentTime(), bot: null },
         ];
         setChatHistory(newChatHistory);
         setUserMessage('');
+        setIsTyping(true);
 
         try {
-            const { data } = await axios.post('/chat', { twitterHandle, userMessage });
-            const updatedChatHistory = [...newChatHistory];
-            updatedChatHistory[updatedChatHistory.length - 1].bot = data.response;
-            updatedChatHistory[updatedChatHistory.length - 1].botTime = getCurrentTime();
-            setChatHistory(updatedChatHistory);
+            const data = await sendChatMessage(twitterHandle, userMessage);
+
+            setChatHistory((prev) =>
+                prev.map((chat, idx) =>
+                    idx === prev.length - 1 ? { ...chat, bot: data?.response ?? 'No response available', botTime: getCurrentTime() } : chat
+                )
+            );
         } catch (error) {
-            console.error('Error fetching response:', error);
-            alert('Failed to get a response from the server.');
+            alert("Failed to get a response from the server.");
+        } finally {
+            setIsTyping(false);
         }
     };
 
     const handleKeyDown = (e) => {
-        if (e.key === 'Enter') {
-            handleChat();
-        }
+        if (e.key === 'Enter') handleChat();
     };
 
     useEffect(() => {
         if (chatContainerRef.current) {
             chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
         }
-    }, [chatHistory]);
+    }, [chatHistory, isTyping]);
 
     return (
         <div className="flex flex-col h-screen bg-black font-inter">
             <div
                 ref={chatContainerRef}
-                className="flex-1 overflow-y-auto p-4 space-y-4 mx-32 "
+                className="flex-1 overflow-y-auto p-4 space-y-4 mx-32"
             >
                 {chatHistory.map((entry, idx) => (
                     <div key={idx} className="flex flex-col">
-
                         <div className="flex justify-end mb-2">
                             <div className='flex flex-col'>
                                 <div className="bg-white text-black p-4 rounded-2xl shadow-md">
@@ -69,27 +71,12 @@ const ChatBox = ({ twitterHandle }) => {
                             </div>
                         </div>
 
-                        {entry.bot === null ? (
-                            idx === chatHistory.length - 1 && (
-                                <div className="flex justify-start mb-2">
-                                    <div className='flex flex-col'>
-                                        <div className='flex'>
-                                            <div className='h-10 w-10 bg-gray-900 rounded-full mr-2 text-white flex items-center justify-center text-lg font-bold'>
-                                                {twitterHandle[0].toUpperCase()}
-                                            </div>
-                                            <div className="bg-gray-900 text-white p-5 rounded-2xl max-w-lg shadow-md animate-pulse">
-                                                <p className="text-sm">Typing...</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            )
-                        ) : (
+                        {entry.bot && (
                             <div className="flex justify-start mb-2">
                                 <div className='flex flex-col'>
                                     <div className='flex'>
                                         <div className='h-10 w-10 bg-gray-900 rounded-full mr-2 text-white flex items-center justify-center text-lg font-bold'>
-                                            {twitterHandle[0].toUpperCase()}
+                                            {twitterHandle.twitterHandle[0]}
                                         </div>
                                         <div className="bg-gray-900 text-white p-5 rounded-2xl max-w-lg shadow-md">
                                             <p className="text-sm">{entry.bot}</p>
@@ -101,6 +88,22 @@ const ChatBox = ({ twitterHandle }) => {
                         )}
                     </div>
                 ))}
+                {isTyping && (
+                    <div className="flex justify-start mb-2">
+                        <div className="flex items-center">
+                            <div className="h-10 w-10 bg-gray-900 rounded-full mr-2 text-white flex items-center justify-center text-lg font-bold">
+                                {twitterHandle.twitterHandle[0].toUpperCase()}
+                            </div>
+                            <div className="bg-gray-900 text-white p-5 rounded-2xl max-w-lg shadow-md">
+                                <div className="flex space-x-2">
+                                    <span className="w-2 h-2 bg-white rounded-full animate-bounce"></span>
+                                    <span className="w-2 h-2 bg-white rounded-full animate-bounce delay-150"></span>
+                                    <span className="w-2 h-2 bg-white rounded-full animate-bounce delay-300"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
 
             <div className="bg-gray-900 p-4 border-t border-gray-300 sticky bottom-0">
@@ -117,7 +120,7 @@ const ChatBox = ({ twitterHandle }) => {
                         onClick={handleChat}
                         className="bg-gray-800 text-white px-4 py-2 hover:scale-125 hover:bg-gray-400 transition duration-300 disabled:bg-gray-300 rounded-full"
                     >
-                        { <IoMdSend className='h-6 w-6' />}
+                        {<IoMdSend className='h-6 w-6' />}
                     </button>
                 </div>
             </div>

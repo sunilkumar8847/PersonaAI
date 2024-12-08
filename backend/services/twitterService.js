@@ -24,11 +24,9 @@ exports.scrapeAndStoreTweets = async (username) => {
         });
 
         const page = await browser.newPage();
-        await page.goto(`https://twitter.com/${username}`, {
-            waitUntil: 'networkidle0',
-        });
-
+        await page.goto(`https://twitter.com/${username}`, { waitUntil: 'networkidle0' });
         await page.waitForSelector('article div[lang]', { timeout: 60000 });
+
         const tweets = await page.evaluate(() => {
             const tweetElements = document.querySelectorAll('article div[lang]');
             return Array.from(tweetElements)
@@ -43,7 +41,6 @@ exports.scrapeAndStoreTweets = async (username) => {
             throw new Error('No tweets could be scraped');
         }
 
-        // Store the scraped data in the database
         const existingRecord = await KnowledgeBase.findOne({ twitterHandle: username });
         if (existingRecord) {
             existingRecord.tweets = tweets;
@@ -66,8 +63,8 @@ exports.scrapeAndStoreTweets = async (username) => {
 };
 
 exports.generateCohereResponse = async (persona, message) => {
-    console.log(`Generating response with persona: "${persona}" for message: "${message}"`);
     try {
+        console.log(`Sending request to Cohere API with persona: ${persona}`);
         const response = await cohereClient.post('generate', {
             model: 'command-xlarge-nightly',
             prompt: `${persona}\n\nUser: ${message}\nBot:`,
@@ -84,13 +81,13 @@ exports.generateCohereResponse = async (persona, message) => {
             throw new Error('No valid text received from Cohere API');
         }
 
+        console.log('Cohere API Response:', response.data.text);
         const generatedResponse = Array.isArray(response.data.text)
             ? response.data.text[0]?.trim() || 'No response generated'
             : response.data.text.trim();
-        console.log('Cohere API Response:', generatedResponse);
         return generatedResponse;
     } catch (error) {
-        console.error('Error with Cohere API request:', error.message);
+        console.error('Error with Cohere API request:', error);
         throw new Error('Failed to generate response: ' + error.message);
     }
 };

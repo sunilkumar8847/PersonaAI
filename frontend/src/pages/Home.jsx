@@ -1,24 +1,32 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { createKnowledgeBase } from '../services/apiService';
 import Navbar from '../components/Navbar';
 
 const Home = () => {
-    const [twitterHandle, setTwitterHandle] = useState('');
+    const [rawTwitterHandle, setRawTwitterHandle] = useState('');
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleCreate = async (e) => {
         e.preventDefault();
-
-        if (twitterHandle.trim()) {
-            navigate('/chat', { state: { twitterHandle } });
-        } else {
-            alert('Please enter a valid Twitter handle');
+        const twitterHandle = rawTwitterHandle.trim().replace(/^@/, '');
+        setLoading(true);
+        try {
+            const { success } = await createKnowledgeBase(twitterHandle);
+            if (success) {
+                navigate('/chat', { state: { twitterHandle } });
+            }
+        } catch (error) {
+            alert("Failed to create knowledge base.");
+        } finally {
+            setLoading(false);
         }
     };
 
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
-            handleSubmit();
+            handleCreate();
         }
     };
 
@@ -35,23 +43,27 @@ const Home = () => {
                         Create new AI Twitter personalities
                     </p>
                 </div>
-                <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-4 mt-0">
+                <form className="w-full max-w-sm space-y-4 mt-0" onSubmit={handleCreate}>
                     <input
                         type="text"
                         placeholder="TwitterHandle (without @)"
-                        value={twitterHandle}
-                        onChange={(e) => setTwitterHandle(e.target.value)}
+                        value={rawTwitterHandle}
+                        onChange={(e) => setRawTwitterHandle(e.target.value)}
                         onKeyDown={handleKeyDown}
                         className="w-full p-3 pl-4 border border-gray-700 bg-gray-800 rounded-full text-white focus:outline-none focus:ring-2 focus:ring-gray-500"
                     />
-
                     <button
                         type="submit"
-                        className="w-full bg-white text-black py-3 rounded-full hover:bg-gray-600 transition duration-300"
+                        className={`w-full py-3 rounded-full transition duration-300 ${loading
+                            ? "bg-gray-600 text-gray-400 cursor-not-allowed"
+                            : "bg-white text-black hover:bg-gray-600"
+                            }`}
+                        disabled={loading}
                     >
-                        Create Persona
+                        {loading ? "Creating..." : "Create Persona"}
                     </button>
                 </form>
+
             </div>
         </div>
     );
