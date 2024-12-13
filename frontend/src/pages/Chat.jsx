@@ -9,8 +9,8 @@ const Chat = () => {
 
     return (
         <div className="chat-page-container">
-            <Navbar message={`Chat with @${twitterHandle}`} className="sticky top-0"/>
-            <ChatBox twitterHandle={{ twitterHandle }} className="mx-36"/>
+            <Navbar message={`${twitterHandle}`} className="sticky top-0" />
+            <ChatBox twitterHandle={{ twitterHandle }} className="mx-4 sm:mx-8 md:mx-20 lg:mx-36" />
         </div>
     );
 };

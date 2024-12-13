@@ -36,7 +36,6 @@ exports.chatResponse = async (req, res) => {
             }
         }
 
-        // Validate that twitterHandle is a string
         if (typeof twitterHandle !== 'string') {
             throw new Error('twitterHandle must be a string');
         }
