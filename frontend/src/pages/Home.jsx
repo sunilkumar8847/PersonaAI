@@ -46,7 +46,7 @@ const Home = () => {
                 <form className="w-full max-w-sm space-y-4 mt-0" onSubmit={handleCreate}>
                     <input
                         type="text"
-                        placeholder="TwitterHandle (without @)"
+                        placeholder="Enter Twitter Username (without @)"
                         value={rawTwitterHandle}
                         onChange={(e) => setRawTwitterHandle(e.target.value)}
                         onKeyDown={handleKeyDown}
