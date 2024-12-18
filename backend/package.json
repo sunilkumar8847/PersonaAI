@@ -14,8 +14,9 @@
     "express": "^4.21.1",
     "mongoose": "^8.8.3",
     "openai": "^4.76.0",
-    "puppeteer": "^23.10.1",
+    "puppeteer": "^23.10.4",
     "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-anonymize-ua": "^2.4.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
     "twitter-api-v2": "^1.18.2"
   },

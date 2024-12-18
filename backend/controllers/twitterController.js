@@ -5,29 +5,38 @@ const ChatLog = require('../model/chatLogModel');
 exports.scrapePersona = async (req, res) => {
     const { twitterHandle } = req.body;
     try {
-        let knowledgeBase = await KnowledgeBase.findOne({ twitterHandle });
+        console.log(`Processing request to scrape tweets for: ${twitterHandle}`);
+        let knowledgeBase;
 
-        if (!knowledgeBase) {
-            console.log('No data found. Scraping tweets...');
-            try {
-                const tweets = await scrapeAndStoreTweets(twitterHandle);
-                knowledgeBase = new KnowledgeBase({ twitterHandle, tweets });
-                await knowledgeBase.save();
-            } catch (scrapeError) {
-                console.log('Tweet scraping failed. Generating persona via Cohere AI...');
-                const fallbackPersona = `Imagine you are ${twitterHandle} (your twitter handle name). You are a person who tweets about interesting ideas, humor, or trending topics. Engage in a brief and casual manner.`;
-                knowledgeBase = new KnowledgeBase({ twitterHandle, tweets: [fallbackPersona] });
-                await knowledgeBase.save();
-            }
-        } else {
-            console.log('Data found in the knowledge base');
+        try {
+            const tweets = await scrapeAndStoreTweets(twitterHandle);
+
+            knowledgeBase = await KnowledgeBase.findOneAndUpdate(
+                { twitterHandle },
+                { tweets },
+                { new: true, upsert: true }
+            );
+
+            console.log('Tweets successfully scraped and stored.');
+        } catch (scrapeError) {
+            console.error('Tweet scraping failed:', scrapeError.message);
+
+            const fallbackPersona = `Imagine you are ${twitterHandle} (your twitter handle name). You are a person who tweets about interesting ideas, humor, or trending topics. Engage in a brief and casual manner.`;
+            knowledgeBase = await KnowledgeBase.findOneAndUpdate(
+                { twitterHandle },
+                { tweets: [fallbackPersona] },
+                { new: true, upsert: true }
+            );
+            console.log('Fallback persona created and stored.');
         }
 
         res.status(200).json({ success: true, twitterHandle });
     } catch (error) {
+        console.error('Error in scrapePersona:', error.message);
         res.status(500).json({ error: error.message });
     }
 };
+
 
 
 exports.chatResponse = async (req, res) => {
@@ -57,7 +66,7 @@ exports.chatResponse = async (req, res) => {
         }
 
         const persona = `You are ${twitterHandle}. ${
-            knowledgeBase.tweets[0].includes('Imagine you are') // Fallback persona check
+            knowledgeBase.tweets[0].includes('Imagine you are')
                 ? knowledgeBase.tweets[0]
                 : `Here are some recent tweets: ${knowledgeBase.tweets.slice(0, 3).join(' ')}.`
         } Respond to user queries in a brief and engaging manner, avoiding lengthy responses.`;

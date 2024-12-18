@@ -25,6 +25,35 @@ exports.scrapeAndStoreTweets = async (username) => {
 
         const page = await browser.newPage();
         await page.goto(`https://twitter.com/${username}`, { waitUntil: 'networkidle0' });
+
+        const scrollPageToEnd = async (page) => {
+            let previousHeight = await page.evaluate(() => document.body.scrollHeight);
+            while (true) {
+                try {
+                    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+                    await new Promise((resolve) => setTimeout(resolve, 2000));
+                    const currentHeight = await page.evaluate(() => document.body.scrollHeight);
+                    if (currentHeight === previousHeight) break;
+                    previousHeight = currentHeight;
+                } catch (e) {
+                    console.error('Error while scrolling:', e.message);
+                    break;
+                }
+            }
+        };
+
+        await scrollPageToEnd(page);
+
+        try {
+            await page.waitForSelector('article div[lang]', { timeout: 5000 });
+            console.log('Selector "article div[lang]" found.');
+        } catch (error) {
+            if (error.name === 'TimeoutError') {
+                console.error('Selector "article div[lang]" not found within the timeout.');
+            } else {
+                console.error('Error while checking for selector:', error);
+            }
+        }
         await page.waitForSelector('article div[lang]', { timeout: 60000 });
 
         const tweets = await page.evaluate(() => {
@@ -61,6 +90,7 @@ exports.scrapeAndStoreTweets = async (username) => {
         throw new Error(`Failed to scrape tweets: ${error.message}`);
     }
 };
+
 
 exports.generateCohereResponse = async (persona, message) => {
     try {
