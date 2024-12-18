@@ -18,7 +18,7 @@ const Home = () => {
                 navigate('/chat', { state: { twitterHandle } });
             }
         } catch (error) {
-            alert("Failed to create knowledge base.");
+            console.log("Failed to create knowledge base.");
         } finally {
             setLoading(false);
         }
