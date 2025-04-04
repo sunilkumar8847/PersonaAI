@@ -11,8 +11,9 @@ app.use(bodyParser.json());
 
 app.use(cors({
   origin: [
-    'http://localhost:5173', 
-    'https://persona-chat-bot.vercel.app',
+    // 'http://localhost:5173', 
+    'http://localhost:5174', 
+    // 'https://persona-chat-bot.vercel.app',
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparison of Security Mechanisms and Features</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+          background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Comparison of Security Mechanisms and Features</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Feature/Mechanism</th>
+                <th>Proposed System</th>
+                <th>Paper 1</th>
+                <th>Paper 2</th>
+                <th>Paper 3</th>
+                <th>Paper 4</th>
+                <th>Paper 5</th>
+                <th>Paper 6</th>
+                <th>Paper 7</th>
+                <th>Paper 8</th>
+                <th>Paper 9</th>
+                <th>Paper 10</th>
+                <th>Paper 11</th>
+                <th>Paper 12</th>
+                <th>Paper 13</th>
+                <th>Paper 14</th>
+                <th>Paper 15</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><b>PKI Implementation</b></td>
+                <td>Cloud-based using Smallstep, user-controlled keys</td>
+                <td>PKI with X.509 certificates</td>
+                <td>Conceptual discussion of PKI components</td>
+                <td>General discussion of PKI in cloud</td>
+                <td>Hybrid PKI (symmetric/asymmetric)</td>
+                <td>Not a core focus</td>
+                <td>Not a core focus</td>
+                <td>Enhanced PKI validation with multiple CAs</td>
+                <td>Discusses PKI as part of data confidentiality</td>
+                <td>Not a core focus</td>
+                <td>Uses PKI in conjunction with blockchain</td>
+                <td>PKI with X.509 certificates</td>
+                <td>PKI implementation in Azure</td>
+                <td>RSA digital signatures</td>
+                <td>Not a core focus</td>
+                <td>Biometric integration with cryptography</td>
+            </tr>
+            <tr>
+                <td><b>Key Management</b></td>
+                <td>User generates and stores private keys locally</td>
+                <td>Implicit in PKI implementation</td>
+                <td>Conceptual discussion of key types</td>
+                <td>Implicit in PKI discussion</td>
+                <td>Implicit in PKI discussion</td>
+                <td>Keys hidden using steganography</td>
+                <td>Not a core focus</td>
+                <td>Focus on certificate signing process</td>
+                <td>Discusses key management as part of data confidentiality</td>
+                <td>Fuzzy logic-based key generation</td>
+                <td>Key access logged on blockchain</td>
+                <td>Implicit in PKI implementation</td>
+                <td>Implicit in PKI implementation</td>
+                <td>Implicit in RSA usage</td>
+                <td>Focus on trust management</td>
+                <td>Key management discussed</td>
+            </tr>
+            <tr>
+                <td><b>Encryption Algorithms</b></td>
+                <td>ECDSA</td>
+                <td>Implicit (likely RSA)</td>
+                <td>Symmetric and Asymmetric Encryption</td>
+                <td>Symmetric and Asymmetric Encryption</td>
+                <td>Symmetric and Asymmetric Encryption</td>
+                <td>AES, Blowfish, RC6</td>
+                <td>Not a core focus</td>
+                <td>Implicit in PKI discussion</td>
+                <td>Homomorphic encryption, RSA, 3DES, etc.</td>
+                <td>RSA</td>
+                <td>Not applicable (focus on signature logging)</td>
+                <td>RSA, SHA-512</td>
+                <td>AES</td>
+                <td>RSA</td>
+                <td>Not explicitly specified</td>
+                <td>Not explicitly specified</td>
+            </tr>
+            <tr>
+                <td><b>Authentication Mechanisms</b></td>
+                <td>Certificate-based authentication by CA</td>
+                <td>Certificate-based, VPN authentication</td>
+                <td>Conceptual discussion of authentication</td>
+                <td>Authentication as a PKI service</td>
+                <td>Authentication as a PKI service</td>
+                <td>User registration, steganography</td>
+                <td>Not a core focus</td>
+                <td>Certificate path validation, public repository lookup</td>
+                <td>Authentication as part of data confidentiality</td>
+                <td>Fuzzy logic-based trust evaluation</td>
+                <td>Signature validation via blockchain</td>
+                <td>Certificate-based, VPN authentication</td>
+                <td>TLS</td>
+                <td>Digital signatures</td>
+                <td>Trust management models</td>
+                <td>Biometric recognition</td>
+            </tr>
+            <tr>
+                <td><b>Certificate Revocation</b></td>
+                <td>CRL and OCSP</td>
+                <td>Implicit in PKI</td>
+                <td>CRLs mentioned</td>
+                <td>Implicit in PKI</td>
+                <td>Implicit in PKI</td>
+                <td>Not a core focus</td>
+                <td>Not a core focus</td>
+                <td>Focus on improved validation, implies revocation</td>
+                <td>Not a core focus</td>
+                <td>Not a core focus</td>
+                <td>Not a core focus</td>
+                <td>Implicit in PKI</td>
+                <td>Implicit in PKI</td>
+                <td>Implicit in PKI</td>
+                <td>Not a core focus</td>
+                <td>Not a core focus</td>
+            </tr>
+            <tr>
+                <td><b>VPN Usage</b></td>
+                <td>Not used directly by the PKI itself (can be used for access to the system)</td>
+                <td>IPSec VPN used for secure communication channels</td>
+                <td>Not a core focus</td>
+                <td>Not a core focus</td>
+                <td>Not a core focus</td>
+                <td>Not a core focus</td>
+                <td>Not a core focus</td>
+                <td>Not a core focus</td>
+                <td>Not a core focus</td>
+                <td>Not a core focus</td>
+                <td>Not a core focus</td>
+                <td>IPSec VPN used for secure communication channels</td>
+                <td>Not a core focus</td>
+                <td>Not a core focus</td>
+                <td>Not a core focus</td>
+                <td>Not a core focus</td>
+            </tr>
+            <tr>
+                <td><b>Blockchain Integration</b></td>
+                <td>Used for core PKI operations (e.g., certificate transparency, audit logging - if applicable)</td>
+                <td>Not used</td>
+                <td>Not used</td>
+                <td>Not used</td>
+                <td>Not used</td>
+                <td>Not used</td>
+                <td>Not used</td>
+                <td>Not used</td>
+                <td>Not used</td>
+                <td>Not used</td>
+                <td>Used for signature logging and trust</td>
+                <td>Not used</td>
+                <td>Not used</td>
+                <td>Not used</td>
+                <td>Not used</td>
+                <td>Not used</td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>
